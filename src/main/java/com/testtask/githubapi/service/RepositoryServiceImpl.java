@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class RepositoryServiceImpl implements RepositoryService {
@@ -28,11 +26,11 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
-    public Set<Repository> getRepositoriesByUsername(String username) {
+    public List<Repository> getRepositoriesByUsername(String username) {
         if (username == null || username.isEmpty()) {
             throw new IllegalArgumentException("Param cannot be null or empty.");
         }
-        Set<Repository> repositories = new HashSet<>();
+        List<Repository> repositories = new ArrayList<>();
         for (RepositoryDTO repository : getRepositories(username)) {
             if (repository.isFork()) {
                 continue;
@@ -45,14 +43,14 @@ public class RepositoryServiceImpl implements RepositoryService {
         return repositories;
     }
 
-    private Set<RepositoryDTO> getRepositories(String username) {
-        return Set.of(
+    private List<RepositoryDTO> getRepositories(String username) {
+        return List.of(
                 Objects.requireNonNull(
                         restTemplate.getForEntity(URL, RepositoryDTO[].class, username).getBody()));
     }
 
-    private Set<BranchDTO> getBranches(String url) {
-        return Set.of(
+    private List<BranchDTO> getBranches(String url) {
+        return List.of(
                 Objects.requireNonNull(
                         restTemplate.getForEntity(url, BranchDTO[].class).getBody()));
     }

@@ -3,8 +3,8 @@ package com.testtask.githubapi.dto;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,7 +18,7 @@ public class RepositoryDTO {
 
     private String branches_url;
 
-    private final Set<BranchDTO> branches = new HashSet<>();
+    private final List<BranchDTO> branches = new ArrayList<>();
 
     public void addBranch(BranchDTO branch) {
         if (branch == null) {

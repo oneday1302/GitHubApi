@@ -2,8 +2,8 @@ package com.testtask.githubapi.response;
 
 import lombok.Data;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class Repository {
@@ -12,7 +12,7 @@ public class Repository {
 
     private String owner_login;
 
-    private Set<Branch> branches = new HashSet<>();
+    private List<Branch> branches = new ArrayList<>();
 
     public void addBranch(Branch branch) {
         if (branch == null) {

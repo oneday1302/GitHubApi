@@ -8,7 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,8 +23,8 @@ public class RepositoryControllerTest {
     MockMvc mvc;
 
     @Test
-    public void getRepositoriesByUsername_shouldReturnSetOfRepositories() throws Exception {
-        when(service.getRepositoriesByUsername("test")).thenReturn(Set.of());
+    public void getRepositoriesByUsername_shouldReturnListOfRepositories() throws Exception {
+        when(service.getRepositoriesByUsername("test")).thenReturn(List.of());
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/github/{username}", "test"))
                 .andExpect(status().isOk());
     }

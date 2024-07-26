@@ -3,9 +3,9 @@ package com.testtask.githubapi.service;
 
 import com.testtask.githubapi.response.Repository;
 
-import java.util.Set;
+import java.util.List;
 
 public interface RepositoryService {
 
-    Set<Repository> getRepositoriesByUsername(String username);
+    List<Repository> getRepositoriesByUsername(String username);
 }

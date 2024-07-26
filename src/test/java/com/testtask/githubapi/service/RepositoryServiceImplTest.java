@@ -6,6 +6,8 @@ import com.testtask.githubapi.dto.CommitDTO;
 import com.testtask.githubapi.dto.OwnerDTO;
 import com.testtask.githubapi.dto.RepositoryDTO;
 import com.testtask.githubapi.mapper.RepositoryMapper;
+import com.testtask.githubapi.response.Branch;
+import com.testtask.githubapi.response.Repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -53,7 +55,7 @@ public class RepositoryServiceImplTest {
     }
 
     @Test
-    void getRepositoriesByUsername_shouldReturnSetOfRepositoriesWithoutForkRepository() {
+    void getRepositoriesByUsername_shouldReturnListOfRepositoriesWithoutForkRepository() {
         RepositoryDTO repository = RepositoryDTO
                 .builder()
                 .name("")
@@ -65,12 +67,12 @@ public class RepositoryServiceImplTest {
         RepositoryDTO[] repositories = {repository};
         when(restTemplate.getForEntity("test", RepositoryDTO[].class, "test")).thenReturn(new ResponseEntity<>(repositories, HttpStatusCode.valueOf(200)));
 
-        assertEquals(Set.of(), service.getRepositoriesByUsername("test"));
+        assertEquals(List.of(), service.getRepositoriesByUsername("test"));
         verify(restTemplate, times(1)).getForEntity("test", RepositoryDTO[].class, "test");
     }
 
     @Test
-    void getRepositoriesByUsername_shouldReturnSetOfRepositories() {
+    void getRepositoriesByUsername_shouldReturnListOfRepositories() {
         BranchDTO branch = new BranchDTO("", new CommitDTO(""));
         RepositoryDTO repository = RepositoryDTO
                 .builder()
@@ -79,7 +81,6 @@ public class RepositoryServiceImplTest {
                 .fork(false)
                 .branches_url("")
                 .build();
-        repository.addBranch(branch);
 
         RepositoryDTO[] repositories = {repository};
         when(restTemplate.getForEntity("test", RepositoryDTO[].class, "test")).thenReturn(new ResponseEntity<>(repositories, HttpStatusCode.valueOf(200)));
@@ -87,7 +88,9 @@ public class RepositoryServiceImplTest {
         BranchDTO[] branches = {branch};
         when(restTemplate.getForEntity("", BranchDTO[].class)).thenReturn(new ResponseEntity<>(branches, HttpStatusCode.valueOf(200)));
 
-        assertEquals(Set.of(mapper.dtoToRepository(repository)), service.getRepositoriesByUsername("test"));
+        List<Repository> expected = List.of(mapper.dtoToRepository(repository));
+        expected.getFirst().addBranch(new Branch(branch.getName(), branch.getCommit().getSha()));
+        assertEquals(expected, service.getRepositoriesByUsername("test"));
         verify(restTemplate, times(1)).getForEntity("test", RepositoryDTO[].class, "test");
         verify(restTemplate, times(1)).getForEntity("", BranchDTO[].class);
     }

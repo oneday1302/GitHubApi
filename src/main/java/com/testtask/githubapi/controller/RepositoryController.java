@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Set;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/github")
@@ -19,7 +19,7 @@ public class RepositoryController {
     private final RepositoryService service;
 
     @GetMapping("/{username}")
-    public ResponseEntity<Set<Repository>> getRepositoriesByUsername(@PathVariable String username) {
+    public ResponseEntity<List<Repository>> getRepositoriesByUsername(@PathVariable String username) {
         return ResponseEntity.ok(service.getRepositoriesByUsername(username));
     }
 }
