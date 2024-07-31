@@ -6,7 +6,7 @@ import com.testtask.githubapi.mapper.RepositoryMapper;
 import com.testtask.githubapi.response.Repository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import java.util.*;
 
@@ -15,13 +15,13 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     private final String URL;
 
-    private final RestTemplate restTemplate;
+    private final RestClient restClient;
 
     private final RepositoryMapper mapper;
 
-    public RepositoryServiceImpl(@Value("${api.github.url}") String url, RestTemplate restTemplate, RepositoryMapper mapper) {
+    public RepositoryServiceImpl(@Value("${api.github.url}") String url, RestClient restClient, RepositoryMapper mapper) {
         this.URL = url;
-        this.restTemplate = restTemplate;
+        this.restClient = restClient;
         this.mapper = mapper;
     }
 
@@ -46,12 +46,12 @@ public class RepositoryServiceImpl implements RepositoryService {
     private List<RepositoryDTO> getRepositories(String username) {
         return List.of(
                 Objects.requireNonNull(
-                        restTemplate.getForEntity(URL, RepositoryDTO[].class, username).getBody()));
+                        restClient.get().uri(URL, username).retrieve().toEntity(RepositoryDTO[].class).getBody()));
     }
 
     private List<BranchDTO> getBranches(String url) {
         return List.of(
                 Objects.requireNonNull(
-                        restTemplate.getForEntity(url, BranchDTO[].class).getBody()));
+                        restClient.get().uri(url).retrieve().toEntity(BranchDTO[].class).getBody()));
     }
 }
