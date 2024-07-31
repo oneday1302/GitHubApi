@@ -32,11 +32,11 @@ public class RepositoryServiceImpl implements RepositoryService {
         }
         List<Repository> repositories = new ArrayList<>();
         for (RepositoryDTO repository : getRepositories(username)) {
-            if (repository.isFork()) {
+            if (repository.fork()) {
                 continue;
             }
-            for (BranchDTO branch : getBranches(repository.getBranches_url().replace("{/branch}", ""))) {
-                repository.addBranch(branch);
+            for (BranchDTO branch : getBranches(repository.branches_url().replace("{/branch}", ""))) {
+                repository.branches().add(branch);
             }
             repositories.add(mapper.dtoToRepository(repository));
         }

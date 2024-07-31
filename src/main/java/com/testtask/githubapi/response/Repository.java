@@ -1,23 +1,13 @@
 package com.testtask.githubapi.response;
 
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-public class Repository {
+public record Repository(String name, String owner_login, List<Branch> branches) {
 
-    private String name;
-
-    private String owner_login;
-
-    private List<Branch> branches = new ArrayList<>();
-
-    public void addBranch(Branch branch) {
-        if (branch == null) {
-            throw new IllegalArgumentException("Param cannot be null.");
+    public Repository {
+        if (branches == null) {
+            branches = new ArrayList<>();
         }
-        branches.add(branch);
     }
 }

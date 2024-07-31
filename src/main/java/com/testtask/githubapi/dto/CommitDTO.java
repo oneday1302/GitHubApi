@@ -1,13 +1,5 @@
 package com.testtask.githubapi.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+public record CommitDTO(String sha) {
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class CommitDTO {
-
-    private String sha;
 }

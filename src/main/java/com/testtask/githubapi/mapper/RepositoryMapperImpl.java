@@ -6,6 +6,9 @@ import com.testtask.githubapi.response.Branch;
 import com.testtask.githubapi.response.Repository;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class RepositoryMapperImpl implements RepositoryMapper {
 
@@ -14,12 +17,10 @@ public class RepositoryMapperImpl implements RepositoryMapper {
         if (dto == null) {
             throw new IllegalArgumentException("Param cannot be null.");
         }
-        Repository repository = new Repository();
-        repository.setName(dto.getName());
-        repository.setOwner_login(dto.getOwner().getLogin());
-        for (BranchDTO branch : dto.getBranches()) {
-            repository.addBranch(new Branch(branch.getName(), branch.getCommit().getSha()));
+        List<Branch> branches = new ArrayList<>();
+        for (BranchDTO branch : dto.branches()) {
+            branches.add(new Branch(branch.name(), branch.commit().sha()));
         }
-        return repository;
+        return new Repository(dto.name(), dto.owner().login(), branches);
     }
 }
