@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @Service
 public class RepositoryServiceImpl implements RepositoryService {
@@ -30,27 +31,21 @@ public class RepositoryServiceImpl implements RepositoryService {
         if (username == null || username.isEmpty()) {
             throw new IllegalArgumentException("Param cannot be null or empty.");
         }
-        List<Repository> repositories = new ArrayList<>();
-        for (RepositoryDTO repository : getRepositories(username)) {
-            if (repository.fork()) {
-                continue;
-            }
-            for (BranchDTO branch : getBranches(repository.branches_url().replace("{/branch}", ""))) {
-                repository.branches().add(branch);
-            }
-            repositories.add(mapper.dtoToRepository(repository));
-        }
-        return repositories;
+        return getRepositories(username)
+                .filter(r -> !r.fork())
+                .peek(r -> getBranches(r.branches_url().replace("{/branch}", "")).forEach(b -> r.branches().add(b)))
+                .map(mapper::dtoToRepository)
+                .toList();
     }
 
-    private List<RepositoryDTO> getRepositories(String username) {
-        return List.of(
+    private Stream<RepositoryDTO> getRepositories(String username) {
+        return Stream.of(
                 Objects.requireNonNull(
                         restClient.get().uri(URL, username).retrieve().toEntity(RepositoryDTO[].class).getBody()));
     }
 
-    private List<BranchDTO> getBranches(String url) {
-        return List.of(
+    private Stream<BranchDTO> getBranches(String url) {
+        return Stream.of(
                 Objects.requireNonNull(
                         restClient.get().uri(url).retrieve().toEntity(BranchDTO[].class).getBody()));
     }
