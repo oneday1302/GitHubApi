@@ -8,7 +8,6 @@ This project is a Spring Boot 3 application built with Java 21 that provides a R
 ## Technologies used
 - Java 21
 - Spring Boot 3
-- Maven
 - Docker
 ## Getting Started
 #### Clone the Repository
